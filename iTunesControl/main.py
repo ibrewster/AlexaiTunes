@@ -9,6 +9,9 @@ from libpytunes import Library
 @app.route("/", methods=["POST"])
 def index():
     print(flask.request.form)
+    print(flask.request.args)
+    print(flask.request.values)
+    print(flask.request.data)
     return "OK"
 
 def run_script(script):
