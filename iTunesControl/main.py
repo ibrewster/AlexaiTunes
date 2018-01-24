@@ -6,11 +6,10 @@ from libpytunes import Library
 
 
 
-@app.route("/")
+@app.route("/", methods=["POST"])
 def index():
-    l = Library("/Volumes/Promise6TB/iTunes/iTunes Library.xml")
-    playlists=l.getPlaylistNames()
-    return "<br>".join(playlists)
+    print(flask.request.form)
+    return "OK"
 
 def run_script(script):
     proc = subprocess.Popen(['osascript', '-'],
