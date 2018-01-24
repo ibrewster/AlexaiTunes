@@ -9,7 +9,7 @@ from libpytunes import Library
 
 @app.route("/", methods=["POST"])
 def index():
-    request = ujson.loads(request.data)
+    request = ujson.loads(flask.request.data)
     request_type = request['request'].get('type', 'unknown')
     print(f"Received request of type {request_type}")
 
