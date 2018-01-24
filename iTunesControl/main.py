@@ -8,7 +8,7 @@ from libpytunes import Library
 
 @app.route("/")
 def index():
-    l = Library("/Volumes/Promise6TB/iTunes/iTunes Library.xml")
+    l = Library("/Media/iTunes/iTunes Library.xml")
     playlists=l.getPlaylistNames()
     return "<br>".join(playlists)
 
@@ -22,12 +22,9 @@ def run_script(script):
     stdout_output = proc.communicate(script)[0]
     return stdout_output
 
-def play_song(song_title):
-    l = Library("/Volumes/Promise6TB/iTunes/iTunes Library.xml")
-
 @app.route('/play/playlist/<playlist>')
 def play_playlist(playlist):
-    l = Library("/Volumes/Promise6TB/iTunes/iTunes Library.xml")
+    l = Library("/Media/iTunes/iTunes Library.xml")
     playlists=l.getPlaylistNames()
 
     if playlist not in playlists:
