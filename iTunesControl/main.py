@@ -1,5 +1,6 @@
 import flask
 import subprocess
+import ujson
 
 from . import app
 from libpytunes import Library
@@ -8,11 +9,25 @@ from libpytunes import Library
 
 @app.route("/", methods=["POST"])
 def index():
-    print(flask.request.form)
-    print(flask.request.args)
-    print(flask.request.values)
-    print(flask.request.data)
-    return "OK"
+    request = ujson.loads(request.data)
+    request_type = request['request'].get('type', 'unknown')
+    print(f"Received request of type {request_type}")
+
+    response_data = {
+        "version": "1.0",
+        "sessionAttribtutes": {},
+        "response": {
+            "outputSpeech": {
+                "type": "PlainText",
+                "text": "OK",
+            },
+        },
+    }
+
+    response_string = ujson.dumps(response_data)
+    response = flask.Response(response_string,
+                              content_type="application/json;charset=UTF-8")
+    return response
 
 def run_script(script):
     proc = subprocess.Popen(['osascript', '-'],
