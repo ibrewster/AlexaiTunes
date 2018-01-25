@@ -13,21 +13,28 @@ def index():
     request_type = request['request'].get('type', 'unknown')
     print(f"Received request of type {request_type}")
 
-    response_data = {
-        "version": "1.0",
-        "sessionAttribtutes": {},
-        "response": {
-            "outputSpeech": {
-                "type": "PlainText",
-                "text": "OK",
-            },
-        },
-    }
+    if request_type == "LaunchRequest":
 
-    response_string = ujson.dumps(response_data)
-    response = flask.Response(response_string,
-                              content_type="application/json;charset=UTF-8")
-    return response
+        response_data = {
+            "version": "1.0",
+            "sessionAttribtutes": {},
+            "response": {
+                "outputSpeech": {
+                    "type": "PlainText",
+                    "text": "OK",
+                },
+            },
+        }
+
+        response_string = ujson.dumps(response_data)
+        response = flask.Response(response_string,
+                                  content_type="application/json;charset=UTF-8")
+        return response
+
+    if request_type == "IntentRequest":
+        intent = request['request'].get('intent', {})
+        if intent.get('name') == "PlaySong":
+            intent_data = intent.get('slots', {})
 
 def run_script(script):
     proc = subprocess.Popen(['osascript', '-'],
@@ -39,10 +46,6 @@ def run_script(script):
     stdout_output = proc.communicate(script)[0]
     return stdout_output
 
-def play_song(song_title):
-    l = Library("/Volumes/Promise6TB/iTunes/iTunes Library.xml")
-
-@app.route('/play/playlist/<playlist>')
 def play_playlist(playlist):
     l = Library("/Volumes/Promise6TB/iTunes/iTunes Library.xml")
     playlists=l.getPlaylistNames()
@@ -55,7 +58,6 @@ def play_playlist(playlist):
     result = run_script(script)
     return result
 
-@app.route('/play/song/<song_title>')
 def play_song(song_title):
     script = f"""tell application "iTunes" to play track "{song_title}" """
 
@@ -72,7 +74,6 @@ def play_song(song_title):
     result = run_script(script)
     return f"Playing {song_title} by {result}"
 
-@app.route('/play/song/<song_title>/<artist>')
 def play_song_artist(song_title, artist):
     script = f"""tell application "iTunes"
         set search_results to (every file track of playlist "Library" whose name contains "{song_title}" and artist contains "{artist}")
@@ -94,27 +95,23 @@ end tell
     return f"Playing {song_title} by {result}"
 
 
-@app.route("/stop")
 def stop_playback():
     script = """tell application "iTunes" to pause"""
     run_script(script)
     return "OK"
 
-@app.route("/play")
 def start_playback():
     script = """tell application "iTunes" to play"""
 
     run_script(script)
     return "OK"
 
-@app.route("/play/next")
 def next_track():
     script = """tell application "iTunes" to play next track """
 
     run_script(script)
     return "OK"
 
-@app.route("/play/previous")
 def previous_track():
     script = """tell application "iTunes" to play previous track """
 
