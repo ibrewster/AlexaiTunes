@@ -2,3 +2,7 @@ env
 __pycache__
 .DS_Store
 ControlServerConfig.ini
+iTunesControl.wpr
+iTunesControl.wpu
+israel.privatedns.org.crt
+israel.privatedns.org.key
