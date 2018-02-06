@@ -147,9 +147,11 @@ def alexa():
     request_type = request['request'].get('type', 'unknown')
 
     # Set a default response in case we get something confusing.
-    result = "I'm sorry, I don't know that"
+    result = "I'm sorry, I don't know how to do that"
     if request_type == "LaunchRequest":
         result = "OK"
+    elif request_type == "SessionEndedRequest":
+        return None
     elif request_type == "IntentRequest":
         intent = request['request'].get('intent', {})
         intent_name = intent.get('name')
@@ -374,6 +376,8 @@ def previous_track(_):
 
 @intent(["QueueSong"])
 def queue_song(intent_data):
+    return "I'm sorry, but I can't do that yet"
+
     song_title=intent_data.get('slots', {}).get('title',{}).get('value')
     song_artist=intent_data.get('slots', {}).get('artist',{}).get('value')
 
@@ -431,6 +435,7 @@ def whats_playing(_):
     """
     result = run_script(script)
 
+    song_title = song_artist = None
     try:
         song_title, song_artist = result.strip().split(",")
     except:

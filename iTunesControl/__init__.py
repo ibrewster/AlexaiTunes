@@ -1,6 +1,5 @@
 from time import sleep
 from threading import Thread
-from threading import Timer
 from libpytunes import Library
 import flask
 import signal
@@ -69,9 +68,11 @@ app = flask.Flask(__name__)
 
 def register_public():
   pub_url = get_tun_url()
-  print(f"Registering tunnel URL of {pub_url}")
+  print(f"Registering tunnel URL of {pub_url}/alexa")
   if pub_url is None:
     return
+
+  pub_url += '/alexa'
 
   # See if we have a user ID
   user_id = config['Alexa'].get('userid')
@@ -88,8 +89,9 @@ def register_public():
   print(f"Registered URL {pub_url} to user {user_id} with result {reg_result.text}")
   return reg_result
 
-#give the tunnel 5 seconds to establish before checking
-Timer(5, register_public).start()
+#give the tunnel 3 seconds to establish before checking
+sleep(3)
+register_public()
 
 from . import main
 from . import control
