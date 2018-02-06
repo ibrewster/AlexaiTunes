@@ -1,0 +1,29 @@
+Alexa iTunes Control Server
+
+Provides an iTunes control skill for Alexa. When installed on a Mac running iTunes, this software will respond to requests from the Alexa iTunes skill to control iTunes behaviors.
+
+Features
+* play/pause/next/previous control of iTunes
+* Play specific songs/albums and/or playlists in response to Alexa requests
+* Uses an ngrok tunnel to avoid having to mess with firewall configs
+
+Requirements:
+* Python 3.6 or greater. May work on 2.7, but not tested.
+
+Additionally, there are a number of python modules this product uses, all of which are installable using pip:
+
+* flask
+* libpytunes
+* requests
+* fuzzywuzzy
+* num2words
+
+SETUP
+Some simple manual setup is required.
+* download and expand (as needed) the iTunes control server (this software) into your desired directory
+* install the required python modules.
+  - NOTE: It is recommended that you install into a virtualenv in a folder named "env" at the root level of this repository.
+* Modify the paths and other settings in the iTunesControl.ini file to match your install
+  - the app_path variable will need to be updated to match whatever location you placed the server in, and if you are NOT using a virtualenv, or created your virtualenv in a folder named something other than "env", the virtualenv directive will need to be changed or removed. Also pay attention to the req-logger and logger directives to specify where to log to. Create these directories if needed, and make sure you have write access to them.
+* Launch the server using the command "/path/to/your/uwsgi iTunesControl.ini"
+* navigate to http://localhost:4380 and make sure the path to your iTunes Library.xml file is correct, and enter your user id (from the alexa skill) to register your server with Alexa

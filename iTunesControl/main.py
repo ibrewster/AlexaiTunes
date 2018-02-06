@@ -1,15 +1,7 @@
 import flask
 import subprocess
-import ujson
-
+import json
 import requests
-import base64
-import hashlib
-import cryptography
-import tempfile
-from cryptography import x509
-from cryptography.hazmat.backends import default_backend
-
 import hmac
 from urllib.parse import urljoin, urlparse
 from datetime import datetime, timedelta
@@ -114,7 +106,7 @@ def alexa():
 
     # Ok, content came from Amazon alexa. Yay! Let's continue....
     # Since it is from Alexa, it is a JSON formated dataset
-    request = ujson.loads(flask.request.data)
+    request = json.loads(flask.request.data)
 
     # Make sure this is coming from *MY* alexa skill
     try:
@@ -176,7 +168,7 @@ def alexa():
         },
     }
 
-    response_string = ujson.dumps(response_data)
+    response_string = json.dumps(response_data)
     response = flask.Response(response_string,
                                   content_type="application/json;charset=UTF-8")
     return response

@@ -1,6 +1,7 @@
 import flask
 import requests
-from . import app, get_tun_url, config, itunes_library, register_public
+from . import app, get_tun_url, config
+from . import itunes_library, register_public, get_iTunes_lib
 
 @app.route("/")
 def index():
@@ -57,4 +58,4 @@ def register_endpoint():
         config.write(configfile)
 
     reg_result = register_public()
-    return reg_result.text
+    return flask.jsonify(reg_result.json())

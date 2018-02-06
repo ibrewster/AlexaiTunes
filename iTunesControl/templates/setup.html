@@ -11,7 +11,12 @@
                 var userid=$('#userid').val();
                 $.post("/setuserid",{'userid':userid})
                 .done(function(result){
-                    alert(result);
+                    if(!result.success){
+                        alert(result.error);
+                        return;
+                    }
+
+                    alert("Server Registered Succesfully.");
                 })
             }
 
@@ -68,7 +73,7 @@
             <div id="AlexaIDInfo" class="optionSet">
                 <p><b>Alexa iTunes User ID</b></p>
                 <div class="description">
-                    Your Alexa iTunes user ID is assigned by the Alexa iTunes skill the first time you try to use it. Check the Alexa app on your phone for a card containing this value after activating the iTunes Alexa skill. It will be a 32 character string seperated with dashes. This ties this instance of the server to your Alexa.
+                    Your Alexa iTunes user ID is assigned by the Alexa iTunes skill the first time you try to use it. Check the Alexa app on your phone for a card containing this value after activating the iTunes Alexa skill. It will be a 8 character string. This ties this instance of the server to your Alexa.
                 </div><br>
                 <b>Alexa iTunes UserID:</b> <input type=text id="userid" value="{{userid}}" size=35 maxlen=35> <button id="setuserid" type="button">Register</button>
             </div>
