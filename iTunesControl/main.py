@@ -151,7 +151,8 @@ def alexa():
     if request_type == "LaunchRequest":
         result = "OK"
     elif request_type == "SessionEndedRequest":
-        return None
+        result = "OK"
+        #return ""
     elif request_type == "IntentRequest":
         intent = request['request'].get('intent', {})
         intent_name = intent.get('name')
