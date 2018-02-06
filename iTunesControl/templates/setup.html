@@ -1,0 +1,77 @@
+<html>
+    <head>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+        <script>
+            $(document).ready(function(){
+                $('#setxmlloc').click(set_itunes);
+                $('#setuserid').click(set_userid);
+            });
+
+            function set_userid(){
+                var userid=$('#userid').val();
+                $.post("/setuserid",{'userid':userid})
+                .done(function(result){
+                    alert(result);
+                })
+            }
+
+            function set_itunes(){
+                var path=$('#xmlloc').val()
+                $.post("/setitunes",{'xmlloc':path})
+                .done(function(data){
+                    if(!data.success){
+                        alert(data.error);
+                        return;
+                    }
+
+                    $('#numtracks').text(data.tracks);
+                    $('#numplaylists').text(data.playlists);
+                });
+            }
+
+        </script>
+        <style>
+            body{
+                text-align: center;
+                background-color:lightblue;
+            }
+            #main{
+                background-color:lightgrey;
+                width:768px;
+                display:inline-block;
+                border:2px outset;
+                padding:5px;
+                box-shadow:4px 4px 10px rgba(0,0,0,.5);
+            }
+
+            .description{
+                margin-bottom:5px;
+                display:inline-block;
+            }
+
+            .optionSet{
+                text-align: left;
+            }
+
+        </style>
+    </head>
+    <body>
+        <div id="main">
+            <h1>Alexa iTunes Control Server Setup</h1>
+            <div id="iTunesInfo" class="optionSet">
+                <p><b>iTunes Library</b></p>
+                <div class="description">Enter the location of your iTunes library XML file. By default, this is ~/Music/iTunes/iTunes Library.xml. If this file does not exist in your iTunes library, you may need to enable sharing the iTunes library XML with other applications in iTunes->Prefrences->Advanced. You can also find the location of your media folder there, if you need it.</div><br>
+
+                <b>iTunes Libary xml location: </b><input type="text" size=50 id="xmlloc" value="{{xmlloc}}"> <button type="button" id="setxmlloc">Set</button><br>
+                <p>Found: &lt; <span id="numtracks">{{numtracks}}</span> &gt; songs and &lt; <span id="numplaylists">{{numplaylists}}</span> &gt; playlists</p>
+            </div>
+            <div id="AlexaIDInfo" class="optionSet">
+                <p><b>Alexa iTunes User ID</b></p>
+                <div class="description">
+                    Your Alexa iTunes user ID is assigned by the Alexa iTunes skill the first time you try to use it. Check the Alexa app on your phone for a card containing this value after activating the iTunes Alexa skill. It will be a 32 character string seperated with dashes. This ties this instance of the server to your Alexa.
+                </div><br>
+                <b>Alexa iTunes UserID:</b> <input type=text id="userid" value="{{userid}}" size=35 maxlen=35> <button id="setuserid" type="button">Register</button>
+            </div>
+        </div>
+    </body>
+</html>
