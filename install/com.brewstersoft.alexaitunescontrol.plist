@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+	<dict>
+		<key>Label</key>
+		<string>com.brewstersoft.alexaitunescontrol</string>
+		<key>ProgramArguments</key>
+        <array>
+	        <string>{{DIR}}/env/bin/uwsgi</string>
+	        <string>iTunesControl.ini</string>
+	    </array>
+	    <key>WorkingDirectory</key>
+            <string>{{DIR}}</string>
+		<key>RunAtLoad</key>
+		<true/>
+		<key>KeepAlive</key>
+        <dict>
+            <key>Crashed</key>
+            <true/>
+        </dict>
+	</dict>
+</plist>

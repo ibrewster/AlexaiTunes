@@ -91,16 +91,31 @@ echo "Installing other dependancies..."
 pip3 install -r install/requirements.txt
 
 echo -n "Setting paths..."
+# Set the path to the application in the uwsgi ini file
 sed -i .dist "2s+.*+app_path = $DIR+" iTunesControl.ini
+# Set the default path to the iTunes music library XML file
 echo -e "[iTunes]\nxmllocation = /Users/`whoami`/Music/iTunes/iTunes Music Library.xml" > ControlServerConfig.ini
+# Write and place the launchd script
+sed "s+{{DIR}}+$DIR+g" install/com.brewstersoft.alexaitunescontrol.plist > ~/Library/LaunchAgents/com.brewstersoft.alexaitunescontrol.plist
 echo "OK"
+if [ ! -f "/Users/`whoami`/Music/iTunes/iTunes Music Library.xml" ]; then
+    echo "***********************WARNING************************"
+    echo "* iTunes music library xml file not detected. Please *"
+    echo "* make sure to check the \Share iTunes Library XML   *"
+    echo "* with other applications\" option is checked in the *"
+    echo "* iTunes advanced preferences, and that the path to  *"
+    echo "* the xml file is set correctly in the Alexa iTunes  *"
+    echo "* control server setup window.                       *"
+    echo "******************************************************"
+fi
 echo -n "Creating log directory..."
 sudo mkdir -p /var/log/iTunesControl
 sudo chmod 777 /var/log/iTunesControl
 sudo chmod 777 /var/run
 echo "OK"
 echo "Installation complete. Starting server..."
-env/bin/uwsgi iTunesControl.ini
+#env/bin/uwsgi iTunesControl.ini
+launchctl load ~/Library/LaunchAgents/com.brewstersoft.alexaitunescontrol.plist
 echo "Server started."
 echo ""
 echo "Your install of the Alexa iTunes Control server is now ready to accept commands."
