@@ -35,6 +35,20 @@ if [ $? -ne 0 ]; then
     exit 1
 fi
 echo "OK"
+
+#Make sure the python3 bin directory is in the path
+PATH=$PATH:`python3-config --prefix`/bin
+
+echo -n "Checking for XCode command line tools install..."
+xcode-select --install 2>/dev/null
+if [ $? -eq 0 ]; then
+  echo "Failed"
+  echo "Installing this package requires the xcode command line tools"
+  echo "Please run the install, then try setup again"
+  exit 1
+fi
+echo "OK"
+
 echo -n "Checking for virtualev install..."
 virtualenv=`which virtualenv`
 if [ $? -ne 0 ]; then
@@ -74,11 +88,16 @@ rm -r libpytunes-master
 cd ../
 echo "`which python`"
 echo "Installing other dependancies..."
-pip install -r install/requirements.txt
+pip3 install -r install/requirements.txt
 
-echo "Creating log directory..."
+echo -n "Setting paths..."
+sed -i .dist "2s+.*+app_path = $DIR+" iTunesControl.ini
+echo -e "[iTunes]\nxmllocation = /Users/`whoami`/Music/iTunes/iTunes Music Library.xml" > ControlServerConfig.ini
+echo "OK"
+echo -n "Creating log directory..."
 sudo mkdir -p /var/log/iTunesControl
 sudo chmod 777 /var/log/iTunesControl
+sudo chmod 777 /var/run
 echo "OK"
 echo "Installation complete. Starting server..."
 env/bin/uwsgi iTunesControl.ini
