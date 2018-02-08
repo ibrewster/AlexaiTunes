@@ -1,0 +1,7 @@
+requests
+num2words
+flask
+six
+fuzzywuzzy
+python-Levenshtein
+uwsgi
