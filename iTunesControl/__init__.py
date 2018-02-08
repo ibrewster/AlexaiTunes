@@ -42,7 +42,7 @@ def get_iTunes_lib():
   global _itunes_library
   # Read in the libary location
   lib_loc = config["iTunes"].get("xmllocation",
-                                 "~/Music/iTunes/iTunes Library.xml")
+                                 "~/Music/iTunes/iTunes Music Library.xml")
   "/Media/iTunes/iTunes Library.xml"
   try:
     _itunes_library = Library(lib_loc)

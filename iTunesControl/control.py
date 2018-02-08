@@ -16,7 +16,7 @@ def index():
         'numtracks': num_tracks,
         'numplaylists': num_playlists,
         'xmlloc': config["iTunes"].get("xmllocation",
-                                 "~/Music/iTunes/iTunes Library.xml"),
+                                 "~/Music/iTunes/iTunes Music Library.xml"),
         'userid': config["Alexa"].get("UserID", ''),
     }
     return flask.render_template("setup.html", **args)
