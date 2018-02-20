@@ -26,15 +26,77 @@ fi
 DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 cd "$DIR"
 
+echo -n "Please enter the directory into which you would like to install this program [/Applications/iTunesControl]:"
+read INSTALL_DIR
+if [ -z $INSTALL_DIR ]; then
+    INSTALL_DIR="/Applications/iTunesControl"
+fi
+
+DIR=$INSTALL_DIR
+echo "Creating install directory $DIR..."
+sudo mkdir -p $DIR
+if [ $? -ne 0 ]; then
+    echo "**********ERROR********"
+    echo "Unable to create install directory"
+    exit 3
+else
+    sudo chown `whoami`:`whoami` $DIR
+    echo "OK"
+fi
+
+cd "$DIR"
+
 # check for python 3
 echo -n "Checking for python3.6 install..."
 which python3
 if [ $? -ne 0 ]; then
     echo "Failed"
-    echo "No python 3.6 install detected. Please download and install python 3.6 or higher from https://www.python.org/downloads/ and try setup again"
-    exit 1
+    echo ""
+    echo "No python 3.6 install detected. I can install it for you using Homebrew"
+    echo "(https://brew.sh) if desired, or you can manually download it from"
+    echo "https://www.python.org/downloads/ and install it yourself."
+    echo -n "Would you like me to attempt an automatic install? [y/n]:"
+    
+    RUN="maybe"
+    read RUN
+    while [ "$RUN" != 'y' ]  && [ "$RUN" != 'n' ] && [ "$RUN" != 'Y' ] && [ "$RUN" != 'N' ]; do
+        echo "Invalid option. Please enter y or n." 
+        echo -n "Would you like to attempt automatic install? [y/n]: "
+        read RUN
+    done
+
+    if [ "$RUN" != 'Y' ] && [ "$RUN" != 'y' ]; then
+        echo "*************ERROR****************"
+        echo "No python 3.6 install detected. Please download and install python 3.6 or higher"
+        echo "from https://www.python.org/downloads/ and try setup again"
+        exit 1
+    fi
+    
+    echo -n "Checking for brew install..."
+    which brew
+    if [ $? -ne 0 ]; then
+        #run homebrew installer
+        /usr/bin/ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
+    else
+        echo "OK"
+    fi
+    
+    echo "Installing python 3 via homebrew..."
+    brew install python3
+    echo -n "Checking for python3.6 install..."
+    which python3
+    if [ $? -ne 0 ]; then
+        echo "****************ERROR*********************"
+        echo "Unable to find python3 after brew install." 
+        echo "Automatic install attempt apparently failed. "
+        echo "Please download and install python 3.6 or higher"
+        echo "from https://www.python.org/downloads/ and try setup again"
+        exit 1
+    fi
+else
+    echo "OK"
 fi
-echo "OK"
+
 
 #Make sure the python3 bin directory is in the path
 PATH=$PATH:`python3-config --prefix`/bin
@@ -48,6 +110,9 @@ if [ $? -eq 0 ]; then
   exit 1
 fi
 echo "OK"
+
+echo -n "Cloning repository to $DIR..."
+git clone https://github.com/ibrewster/AlexaiTunes.git $DIR
 
 echo -n "Checking for virtualev install..."
 virtualenv=`which virtualenv`
@@ -101,7 +166,7 @@ echo "OK"
 if [ ! -f "/Users/`whoami`/Music/iTunes/iTunes Music Library.xml" ]; then
     echo "***********************WARNING************************"
     echo "* iTunes music library xml file not detected. Please *"
-    echo "* make sure to check the \Share iTunes Library XML   *"
+    echo "* make sure to check the \"Share iTunes Library XML   *"
     echo "* with other applications\" option is checked in the *"
     echo "* iTunes advanced preferences, and that the path to  *"
     echo "* the xml file is set correctly in the Alexa iTunes  *"
@@ -123,6 +188,6 @@ echo "Please open a browser window and navigate to http://localhost:4380 to set 
 echo "your iTunes library path (if different than default) and register this server"
 echo "with your Alexa account using the user ID provided by your Alexa"
 echo ""
-echo "If you have not yet been given a user ID, please say 'Alexa, open iTunes' and "
+echo "If you have not yet been given a user ID, please say 'Alexa, open My Computer' and "
 echo "Alexa will send a card to your phone with the required information"
 open http://localhost:4380

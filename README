@@ -20,9 +20,23 @@ Additionally, there are a number of python modules this product uses, all of whi
 * fuzzywuzzy
 * num2words
 
-SETUP
+AUTOMATIC SETUP:
+Just download and run the setup.command file. This script will install Python 3 (if needed) using homebrew (which it will also install if needed), make sure the XCode command line tools are installed, dowload the program files to your computer, and set ut the server to automatically launch.
+    
+If you do not get the Alexa iTunes Control Server Setup page at the end of the process, please file a bug report with the error you got (if any).
+    
+You will still need to enable the "Share iTunesLibrary XML with other applications" option in iTunes Preferences->Advanced
+    
+MANUAL SETUP
+In general, you should do the Automatic Setup using the setup script. However, a manual setup is possible as well.
+
 * Verify Prerequisites: Python 3.6 or later installed (https://www.python.org/downloads/) as well as the XCode command line tools (xcode-select --install)
 * Make sure the "Share iTunesLibrary XML with other applications" option in iTunes Preferences->Advanced is checked.
 * Download and expand this repository into your desired location
-* Double-click the setup.command file to setup the server on your machine
+* Set up a virtualenv with the required python modules (listed in the install/requirements.txt file)
+* Build and install the libpytunes module, found in the install/ folder as a .zip file, into the virtualenv (it is apparently not available via PyPi)
+* Modify the iTunesControl.ini file to point to the proper location and virtual env, and to run as the proper user
+* If desired, modify the install/com.brewstersoft.alexaitunescontrol.plist launchd script to point to the correct directory, and install it into ~/Library/LaunchAgents. Note that this program expects to run as a logged-in user (as it is intended to control an instance of iTunes) and NOT as root, so we don't put it in the LaunchDaemons folder or in the root level /Library folders. This will automatically launch the server on user login.
+* Create a directory /var/log/iTunesControl to hold the log files, and make sure the current user has write access to this folder.
+* you can manually launch the server by activating the virtualenv and running `uwsgi iTunesControl.ini`
 * Once setup is complete, navigate to http://localhost:4380 to verify your iTunes library path and register your server with Alexa.
