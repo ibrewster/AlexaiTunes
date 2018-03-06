@@ -37,7 +37,7 @@ def set_ngrok():
     #restart the ngrok tunnel
     global ngrok
     ngrok.terminate()
-    ngrok.join()
+    ngrok.communicate()  #wait for process to finish
     ngrok=subprocess.Popen(['./ngrok','http','4380'],stdout=subprocess.DEVNULL)
 
     return flask.jsonify({'success': True,})
