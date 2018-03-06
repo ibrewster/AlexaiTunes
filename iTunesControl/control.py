@@ -41,6 +41,8 @@ def set_ngrok():
     ngrok=subprocess.Popen(['./ngrok','http','4380'],stdout=subprocess.DEVNULL)
 
     # Re-register the new ngrok tunnel endpoint
+    #give the tunnel 3 seconds to establish before checking
+    sleep(3)
     register_public()
 
     return flask.jsonify({'success': True,})
