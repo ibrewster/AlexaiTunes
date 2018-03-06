@@ -40,6 +40,9 @@ def set_ngrok():
     ngrok.communicate()  #wait for process to finish
     ngrok=subprocess.Popen(['./ngrok','http','4380'],stdout=subprocess.DEVNULL)
 
+    # Re-register the new ngrok tunnel endpoint
+    register_public()
+
     return flask.jsonify({'success': True,})
 
 @app.route("/setitunes", methods=["POST"])
