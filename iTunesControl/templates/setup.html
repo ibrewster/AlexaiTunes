@@ -5,6 +5,7 @@
             $(document).ready(function(){
                 $('#setxmlloc').click(set_itunes);
                 $('#setuserid').click(set_userid);
+                $('#setngrok').click(set_ngrok);
             });
 
             function set_userid(){
@@ -17,6 +18,19 @@
                     }
 
                     alert("Server Registered Succesfully.");
+                })
+            }
+
+            function set_ngrok(){
+                var authtoken=$('#ngroktoken').val();
+                $.post("/setngrok",{'authtoken':authtoken})
+                .done(function(result){
+                    if(!result.success){
+                        alert(result.error);
+                        return;
+                    }
+
+                    alert("ngrok Auth token set succesfully.");
                 })
             }
 
@@ -76,6 +90,13 @@
                     Your Alexa iTunes user ID is assigned by the Alexa iTunes skill the first time you try to use it. Check the Alexa app on your phone for a card containing this value after activating the iTunes Alexa skill. It will be a 8 character string. This ties this instance of the server to your Alexa.
                 </div><br>
                 <b>Alexa iTunes UserID:</b> <input type=text id="userid" value="{{userid}}" size=35 maxlen=35> <button id="setuserid" type="button">Register</button>
+            </div>
+            <div id="NGrokInfo" class="optionSet">
+                <p><b>ngrok authtoken</b></p>
+                <div class="description">
+                    This server uses a ngrok tunnel to enable access from Alexa servers without needing to mess with firewalls or other network configuration. No registration of any kind is required to use this service. Unregistered tunnels, however, have a limited lifetime, which will require you to periodically restart your control server (this device) to re-establish control. Alternatively, you can register for a free account at https://ngrok.com, which will remove this limitation. After registration, you can login and click "auth" in the menu on the left to get your "Tunnel Authtoken". Copy and paste that in here to register your tunnel.
+                </div><br>
+                <b>ngrok authtoken:</b> <input type=text id="userid" size=43 maxlen=43> <button id="setngrok" type="button">Set</button>
             </div>
         </div>
     </body>

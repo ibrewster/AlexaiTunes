@@ -21,6 +21,26 @@ def index():
     }
     return flask.render_template("setup.html", **args)
 
+@app.route("/setngrok", methods=["POST"])
+def set_ngrok():
+    ngrok_token = flask.request.form.get('authtoken')
+    if ngrok_token is None:
+        return flask.jsonify({'success': False, 'error': 'No Token Provided',})
+
+    # Register token with ngrok
+    try:
+        subprocess.check_call(['./ngrok', 'authtoken', ngrok_token])
+    except subprocess.CalledProcessError:
+        return flask.jsonify({'success': False, 'error': 'Unable to register with ngrok',})
+
+    #restart the ngrok tunnel
+    global ngrok
+    ngrok.terminate()
+    ngrok.join()
+    ngrok=subprocess.Popen(['./ngrok','http','4380'],stdout=subprocess.DEVNULL)
+
+    return flask.jsonify({'success': True,})
+
 @app.route("/setitunes", methods=["POST"])
 def set_iTunes():
     itunes_lib_path = flask.request.form.get('xmlloc')
