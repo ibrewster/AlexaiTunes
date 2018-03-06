@@ -40,7 +40,7 @@ if [ $? -ne 0 ]; then
     echo "Unable to create install directory"
     exit 3
 else
-    sudo chown `whoami`:`whoami` $DIR
+    sudo chown `whoami` $DIR
     echo "OK"
 fi
 
